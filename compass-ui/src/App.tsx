@@ -1,34 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+const MenuBackends = ["http://localhost:3000/compass/menu", "http://localhost:3001/compass/menu"]
+
+type MenuItem = {
+  label: string
+  url?: string
+  items?: MenuItem[]
+}
+
+function useCompassMenu(backends: string[]) {
+  const [ menu, setMenu ] = useState<MenuItem[]>([])
+
+  useEffect(() => {
+    const headers = new Headers()
+    headers.set("Cache-Control", "max-age=10")
+    const updatedMenu = backends.map(async (menuUrl) => await fetch(menuUrl, { cache: 'force-cache', headers }))
+                                .map(async (response) => (await response).json())
+    Promise.all(updatedMenu).then(setMenu)
+  }, [backends])
+
+  return menu
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const menus = useCompassMenu(MenuBackends)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <ul>
+      {menus.map((menu) => (
+        <li>
+          <a href={menu.url}>{menu.label}</a>
+          <ul>
+            {menu.items?.map((item) => (
+              <li>
+                <a href={item.url}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
   )
 }
 
