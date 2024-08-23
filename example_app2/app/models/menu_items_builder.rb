@@ -4,7 +4,7 @@ class MenuItemsBuilder
   end
 
   def access_modified_at(request)
-    1.days.ago
+    File.mtime(Rails.root.join("config/application.rb"))
   end
   
   def call(request)
