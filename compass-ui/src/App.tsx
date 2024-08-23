@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { CachePolicies, useFetch } from 'use-http'
 
 const MenuBackends = ["http://localhost:3000/compass/menu", "http://localhost:3001/compass/menu"]
 
@@ -10,17 +11,17 @@ type MenuItem = {
 }
 
 function useCompassMenu(backends: string[]) {
-  const [ menu, setMenu ] = useState<MenuItem[]>([])
+  const [ menuItems, setMenuItems ] = useState<MenuItem[]>([])
+  const menuBackends = backends.map((backend) => useFetch(backend, { cachePolicy: CachePolicies.CACHE_FIRST }))
 
   useEffect(() => {
-    const headers = new Headers()
-    headers.set("Cache-Control", "max-age=10")
-    const updatedMenu = backends.map(async (menuUrl) => await fetch(menuUrl, { cache: 'force-cache', headers }))
-                                .map(async (response) => (await response).json())
-    Promise.all(updatedMenu).then(setMenu)
+    const updatedMenu = menuBackends.map((backend) => backend.get())
+    Promise.all(updatedMenu).then((items) => {
+      setMenuItems(items.filter(Boolean))
+    })
   }, [backends])
 
-  return menu
+  return menuItems
 }
 
 function App() {
@@ -28,12 +29,12 @@ function App() {
 
   return (
     <ul>
-      {menus.map((menu) => (
-        <li>
+      {menus.map((menu, menuIndex) => (
+        <li key={`${menu}-${menu.label}-${menuIndex}`}>
           <a href={menu.url}>{menu.label}</a>
           <ul>
-            {menu.items?.map((item) => (
-              <li>
+            {menu.items?.map((item, index) => (
+              <li key={`${item}-${item.label}-${index}`}>
                 <a href={item.url}>{item.label}</a>
               </li>
             ))}
