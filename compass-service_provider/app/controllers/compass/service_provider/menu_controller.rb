@@ -10,7 +10,6 @@ module Compass
         Rails.logger.debug("Last modified at " + ServiceProvider.menu_items.access_modified_at(request).utc.to_s)
 
         if stale?(last_modified: ServiceProvider.menu_items.access_modified_at(request).utc, etag: "hello")
-          headers["Cache-Control"] = "max-age=10, public"
           render json: ServiceProvider.menu_items.call(request)
         else
           Rails.logger.debug("Cache hit!")
@@ -27,6 +26,7 @@ module Compass
         headers['Access-Control-Allow-Origin'] = '*'
         headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, Cache-Control'
+        headers["Cache-Control"] = "max-age=#{ServiceProvider.menu_items.cache_time}, public"
       end
     end
   end

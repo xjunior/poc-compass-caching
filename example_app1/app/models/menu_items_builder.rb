@@ -1,4 +1,8 @@
 class MenuItemsBuilder
+  def cache_time
+    10
+  end
+
   def access_modified_at(request)
     File.mtime(Rails.root.join("config/application.rb"))
   end

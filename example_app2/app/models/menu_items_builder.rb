@@ -1,4 +1,8 @@
 class MenuItemsBuilder
+  def cache_time
+    50
+  end
+
   def access_modified_at(request)
     1.days.ago
   end
