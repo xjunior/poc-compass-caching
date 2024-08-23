@@ -5,11 +5,15 @@ module Compass
       skip_forgery_protection
       
       def index
+        Rails.logger.debug("Request time " + Time.current.to_s)
+        Rails.logger.debug("Max age " + ServiceProvider.menu_items.cache_time.to_s + " seconds")
+        Rails.logger.debug("Last modified at " + ServiceProvider.menu_items.access_modified_at(request).utc.to_s)
+
         if stale?(last_modified: ServiceProvider.menu_items.access_modified_at(request).utc, etag: "hello")
           headers["Cache-Control"] = "max-age=10, public"
           render json: ServiceProvider.menu_items.call(request)
         else
-          Rails.logger.debug("Cache hit! " * 10)
+          Rails.logger.debug("Cache hit!")
         end
       end
 
