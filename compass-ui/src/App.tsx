@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { CachePolicies, useFetch } from 'use-http'
 
 const MenuBackends = ["http://localhost:3000/compass/menu", "http://localhost:3001/compass/menu"]
 
@@ -10,14 +9,19 @@ type MenuItem = {
   items?: MenuItem[]
 }
 
+async function fetchServiceData(backend: string) {
+  return await fetch(backend, { cache: 'default' })
+                  .then((response) => response.json())
+}
+
 function useCompassMenu(backends: string[]) {
   const [ menuItems, setMenuItems ] = useState<MenuItem[]>([])
-  const menuBackends = backends.map((backend) => useFetch(backend, { cachePolicy: CachePolicies.CACHE_FIRST }))
 
   useEffect(() => {
-    const updatedMenu = menuBackends.map((backend) => backend.get())
+    const updatedMenu = backends.map(fetchServiceData)
+
     Promise.all(updatedMenu).then((items) => {
-      setMenuItems(items.filter(Boolean))
+      setMenuItems(items)
     })
   }, [backends])
 
