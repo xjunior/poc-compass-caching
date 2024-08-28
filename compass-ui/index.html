@@ -7,7 +7,22 @@
     <title>Vite + React + TS</title>
   </head>
   <body>
-    <div id="root"></div>
+    <table width="100%">
+      <tr>
+        <td width="50%">
+          <h2>React</h2>
+          <div id="root"></div>
+        </td>
+        <td width="50%">
+          <h2>Web Component</h2>
+          <compass-menu>
+            <compass-menu-backend uri="http://localhost:3000/compass/menu"></compass-menu-backend>
+            <compass-menu-backend uri="http://localhost:3001/compass/menu"></compass-menu-backend>
+          </compass-menu>
+        </td>
+      </tr>
+    </table>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
