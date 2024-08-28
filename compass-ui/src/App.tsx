@@ -11,6 +11,7 @@ type MenuItem = {
 
 async function fetchServiceData(backend: string) {
   return await fetch(backend, { cache: 'default' })
+                  .catch(() => fetch(backend, { cache: "force-cache" }))
                   .then((response) => response.json())
 }
 
