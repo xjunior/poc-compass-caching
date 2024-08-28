@@ -8,18 +8,20 @@ class MenuItemsBuilder
   end
 
   def call(request)
-    {
-      label: "Learning Dojo",
-      items: [
-        {
-          label: "Classes",
-          url: "http://example.com/classes"
-        },
-        {
-          label: "Students",
-          url: "http://example.com/students"
-        }
-      ]
-    }
+    [
+      {
+        label: "Learning Dojo",
+        items: [
+          {
+            label: "Classes",
+            url: "http://example.com/classes"
+          },
+          {
+            label: "Students",
+            url: "http://example.com/students"
+          }
+        ]
+      }
+    ]
   end
 end

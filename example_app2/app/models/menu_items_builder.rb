@@ -8,18 +8,20 @@ class MenuItemsBuilder
   end
   
   def call(request)
-    {
-      label: "Runway",
-      items: [
-        {
-          label: "Groups",
-          url: "http://example.com/groups"
-        },
-        {
-          label: "Teams",
-          url: "http://example.com/teams"
-        }
-      ]
-    }
+    [
+      {
+        label: "Runway",
+        items: [
+          {
+            label: "Groups",
+            url: "http://example.com/groups"
+          },
+          {
+            label: "Teams",
+            url: "http://example.com/teams"
+          }
+        ]
+      }
+    ]
   end
 end

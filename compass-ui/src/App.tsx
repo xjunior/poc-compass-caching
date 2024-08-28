@@ -1,28 +1,15 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { fetchBackendsData, MenuItem } from './fetchBackendsData'
 
 const MenuBackends = ["http://localhost:3000/compass/menu", "http://localhost:3001/compass/menu"]
-
-type MenuItem = {
-  label: string
-  url?: string
-  items?: MenuItem[]
-}
-
-async function fetchServiceData(backend: string) {
-  return await fetch(backend, { cache: 'default' })
-                  .catch(() => fetch(backend, { cache: "force-cache" }))
-                  .then((response) => response.json())
-}
 
 function useCompassMenu(backends: string[]) {
   const [ menuItems, setMenuItems ] = useState<MenuItem[]>([])
 
   useEffect(() => {
-    const updatedMenu = backends.map(fetchServiceData)
-
-    Promise.all(updatedMenu).then((items) => {
-      setMenuItems(items)
+    fetchBackendsData(backends).then((items) => {
+      setMenuItems(items.flat())
     })
   }, [backends])
 
